@@ -9,3 +9,4 @@ export default class Product {
         this.stock = stock;
     }
 }
+
