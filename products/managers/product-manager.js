@@ -6,7 +6,10 @@ export default class ProductManager {
     static async modifyProduct(pid, productModifications) {
         const products = await ProductManager.getProducts();
         const position = products.findIndex(p => p.id === pid);
-        if (position === -1) return null;
+        if (position === -1) {
+            return null
+        }
+        ;
 
         const {id, ...modifications} = productModifications;
         products[position] = {...products[position], ...modifications};
