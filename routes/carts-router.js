@@ -9,11 +9,11 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/:cid", async (req, res) => {
-    res.send(await CartManager.getCartById(req.params.cid));
+    res.send(await CartManager.getCartById(req.params["cid"]));
 });
 
 router.post("/:cid/product/:pid", async (req, res) => {
-    res.send(await CartManager.addProductToCart(req.params.cid, req.params.pid));
+    res.send(await CartManager.addProductToCart(req.params["cid"], req.params.pid));
 });
 
 export default router;

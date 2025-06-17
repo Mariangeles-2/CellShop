@@ -1,19 +1,19 @@
 import express from "express";
 import ProductManager from "../products/managers/product-manager.js";
-import validateProduct from "../products/utils/product-utils.js";
+import {validateProductFull, validateProductPartial} from "../products/utils/product-utils.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-    res.send(await ProductManager.getProducts())
+    res.send(await ProductManager.getProducts());
 });
 
 router.get("/:pid", async (req, res) => {
-    res.send(await ProductManager.getProductById(req.params.pid))
+    res.send(await ProductManager.getProductById(req.params.pid));
 });
 
 router.post("/", async (req, res) => {
-    const error = validateProduct(req.body);
+    const error = validateProductFull(req.body);
     if (error) {
         return res.status(400).json({error});
     }
@@ -21,11 +21,15 @@ router.post("/", async (req, res) => {
 });
 
 router.put("/:pid", async (req, res) => {
+    const error = validateProductPartial(req.body);
+    if (error) {
+        return res.status(400).json({error});
+    }
     res.send(await ProductManager.modifyProduct(req.params.pid, req.body));
 });
 
 router.delete("/:pid", async (req, res) => {
-    res.send(await ProductManager.deleteProduct(req.params.pid))
+    res.sendStatus(204).send(await ProductManager.deleteProduct(req.params.pid));
 });
 
 export default router;
