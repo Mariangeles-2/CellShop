@@ -5,7 +5,7 @@ import createError from "http-errors"
 export default class ProductManager {
 
     static async getProducts() {
-        const productos = await fs.promises.readFile("products/database/products.json", "utf8");
+        const productos = await fs.promises.readFile("src/products/database/products.json", "utf8");
         return JSON.parse(productos);
     }
 
@@ -19,7 +19,7 @@ export default class ProductManager {
             .then(async products => {
                 const newProductWithId = {...newProduct, id: randomUUID()};
                 products.push(newProductWithId);
-                await fs.promises.writeFile("products/database/products.json", JSON.stringify(products));
+                await fs.promises.writeFile("src/products/database/products.json", JSON.stringify(products));
                 return newProductWithId;
             });
     }
@@ -32,13 +32,13 @@ export default class ProductManager {
         }
         const {id, ...modifications} = productModifications;
         products[position] = {...products[position], ...modifications};
-        await fs.promises.writeFile("products/database/products.json", JSON.stringify(products));
+        await fs.promises.writeFile("src/products/database/products.json", JSON.stringify(products));
         return products[position];
     }
 
     static async deleteProduct(pid) {
         const productList = await ProductManager.getProducts().then(products => products.filter(product => product.id !== pid));
-        await fs.promises.writeFile("products/database/products.json", JSON.stringify(productList));
+        await fs.promises.writeFile("src/products/database/products.json", JSON.stringify(productList));
     }
 
     static async checkIfProductExist(pid) {

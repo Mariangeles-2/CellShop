@@ -5,7 +5,7 @@ import createHttpError from "http-errors";
 
 export default class CartManager {
     static async getCarts() {
-        const carts = await fs.promises.readFile("carts/database/carts.json", "utf-8");
+        const carts = await fs.promises.readFile("src/carts/database/carts.json", "utf-8");
         return JSON.parse(carts);
     }
 
@@ -13,7 +13,7 @@ export default class CartManager {
         const carts = await CartManager.getCarts();
         const newCart = CartManager.#createNewCart();
         carts.push(newCart);
-        await fs.promises.writeFile("carts/database/carts.json", JSON.stringify(carts));
+        await fs.promises.writeFile("src/carts/database/carts.json", JSON.stringify(carts));
         return newCart;
     }
 
@@ -59,6 +59,6 @@ export default class CartManager {
         const carts = await CartManager.getCarts();
         const position = carts.findIndex(c => c.id === cart.id);
         carts[position] = cart;
-        await fs.promises.writeFile("carts/database/carts.json", JSON.stringify(carts));
+        await fs.promises.writeFile("src/carts/database/carts.json", JSON.stringify(carts));
     }
 }
