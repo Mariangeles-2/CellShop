@@ -12,6 +12,7 @@
   "type": "module",
   "dependencies": {
     "express": "^5.1.0",
+    "express-handlebars": "^8.0.1",
     "http-errors": "^2.0.0"
   },
   "devDependencies": {
