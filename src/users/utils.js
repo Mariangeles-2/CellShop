@@ -1,10 +1,12 @@
 import users from "../users/database/users.js";
 
+// Devuelve un usuario aleatorio
 export function getRandomUser() {
     const index = Math.floor(Math.random() * users.length);
     return users[index];
 }
 
+// Valida los datos de un usuario
 export function validateUser(user) {
     const {firstName, lastName, age, email, phone, password} = user;
     if (

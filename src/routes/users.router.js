@@ -4,6 +4,7 @@ import users from "../users/database/users.js";
 
 const usersRouter = Router();
 
+// Ruta para registrar un nuevo usuario
 usersRouter.post("/", (req, res) => {
     const newUser = req.body
 

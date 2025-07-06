@@ -5,6 +5,7 @@ import usersRouter from "./users.router.js";
 
 const router = Router();
 
+//Rutas
 router.use("/products", productsRouter);
 router.use("/carts", cartsRouter);
 router.use("/users", usersRouter)

@@ -1,3 +1,4 @@
+// Valida que un producto tenga los campos requeridos y tipo
 export function validateProductFull(product) {
     const {title, description, price, thumbnail, code, stock} = product;
     if (!title || typeof title !== "string") return "Title is required and must be a string.";
@@ -9,6 +10,7 @@ export function validateProductFull(product) {
     return null;
 }
 
+// Valida los campos de un producto
 export function validateProductPartial(product) {
     const {title, description, price, thumbnail, code, stock} = product;
     if (title && typeof title !== "string") return "Title must be a string.";
