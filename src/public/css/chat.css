@@ -1,0 +1,118 @@
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 80vh;
+    background: #f0f4f8;
+    padding: 2rem 0;
+}
+
+.chat-card {
+    background: #fff;
+    padding: 1.5rem 2rem;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+    min-width: 350px;
+    max-width: 500px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-title {
+    color: #000000;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.messages-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    max-height: 300px;
+    padding-right: 0.5rem;
+}
+
+.message {
+    background: #f1f2f6;
+    border-radius: 8px;
+    padding: 0.7rem 1rem;
+    margin-bottom: 0.7rem;
+    color: #2d3436;
+    word-break: break-word;
+}
+
+.message.user {
+    background: #dff9fb;
+    align-self: flex-end;
+    color: #0984e3;
+}
+
+.message.other {
+    background: #f6e58d;
+    align-self: flex-start;
+    color: #636e72;
+}
+
+.chat-input-area {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 0.7rem 1rem;
+    border-radius: 8px;
+    border: 1px solid #dfe6e9;
+    font-size: 1rem;
+}
+
+.send-btn {
+    background: #0984e3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.7rem 1.2rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.send-btn:hover {
+    background: #74b9ff;
+}
+
+.messages-list {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    padding-right: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.message {
+    max-width: 75%;
+    padding: 0.7rem 1rem;
+    border-radius: 16px;
+    font-size: 1rem;
+    word-break: break-word;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.message.user {
+    background: #dff9fb;
+    align-self: flex-end;
+    color: #0984e3;
+    border-bottom-right-radius: 4px;
+}
+
+.message.other {
+    background: #f6e58d;
+    align-self: flex-start;
+    color: #636e72;
+    border-bottom-left-radius: 4px;
+}

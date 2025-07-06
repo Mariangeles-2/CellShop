@@ -14,11 +14,21 @@ viewsRouter.get("/", async (req, res) => {
     res.render("index", {
         user: user,
         isAdmin: user.role === "admin",
-        products
+        products,
+        pageStyles: "index"
     });
 })
 
 viewsRouter.get("/register", (req, res) => {
     res.render("register");
 })
+
+viewsRouter.get("/chat", (req, res) => {
+    res.render("chat", {pageStyles: "chat"});
+});
+
+viewsRouter.get("/realtimeproducts", (req, res) => {
+    res.render("realTimeProducts", {pageStyles: "realtimeproducts"});
+})
+
 export default viewsRouter;

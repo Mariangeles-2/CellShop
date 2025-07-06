@@ -1,0 +1,12 @@
+<h1 class="chat-title">Chat comunitario de CellShop</h1>
+
+<div id="chatBoxContainer" class="chat-container" style="display:flex">
+    <div id="messageLogs" class="messages-list"></div>
+    <div class="chat-input-area">
+        <input id="chatBox" class="chat-input" type="text" placeholder="Escribe tu mensaje..." autocomplete="off"/>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/static/js/chat.js" type="module" defer></script>
