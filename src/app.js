@@ -1,4 +1,5 @@
 import express from "express";
+import dotenv from "dotenv";
 import allRoutes from "./routes/index.js";
 import {engine} from "express-handlebars";
 import viewsRouter from "./routes/views.router.js";
@@ -6,10 +7,17 @@ import http from "http";
 import {Server} from "socket.io";
 import {__dirname} from "./utils.js";
 import ProductManager from "./products/managers/product-manager.js";
+import DatabaseConnection from "./config/database.js";
+
+// Configuración variables de entorno
+dotenv.config();
 
 // Express
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
+
+// Conexión a la DB
+await DatabaseConnection.connect();
 
 // HTTP desde Express
 const httpServer = http.createServer(app);
