@@ -65,3 +65,125 @@
     margin-top: 2rem;
     text-align: center;
 }
+
+/* Estilos para controles de paginación en index */
+.pagination-controls {
+    background: #fff;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.items-per-page {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.items-per-page label {
+    font-weight: 600;
+    color: #2d3436;
+    font-size: 0.95em;
+}
+
+.items-per-page select {
+    padding: 8px 12px;
+    border: 1px solid #bfc0c0;
+    border-radius: 6px;
+    font-size: 0.9em;
+    background: #fff;
+    color: #2d3436;
+    min-width: 120px;
+}
+
+.items-per-page select:focus {
+    border-color: #0984e3;
+    outline: none;
+}
+
+.sort-options {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sort-options label {
+    font-weight: 600;
+    color: #2d3436;
+    font-size: 0.95em;
+}
+
+.sort-options select {
+    padding: 8px 12px;
+    border: 1px solid #bfc0c0;
+    border-radius: 6px;
+    font-size: 0.9em;
+    background: #fff;
+    color: #2d3436;
+    min-width: 140px;
+}
+
+.sort-options select:focus {
+    border-color: #0984e3;
+    outline: none;
+}
+
+.pagination-info {
+    font-weight: 600;
+    color: #2d3436;
+    font-size: 0.95em;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-buttons button {
+    padding: 8px 16px;
+    border: 1px solid #0984e3;
+    border-radius: 6px;
+    background: #0984e3;
+    color: #fff;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    min-width: 80px;
+}
+
+.pagination-buttons button:hover:not(:disabled) {
+    background: #0770c4;
+    border-color: #0770c4;
+}
+
+.pagination-buttons button:disabled {
+    background: #bfc0c0;
+    border-color: #bfc0c0;
+    cursor: not-allowed;
+}
+
+/* Responsive para controles de paginación en index */
+@media (max-width: 600px) {
+    .pagination-controls {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+    }
+
+    .pagination-buttons {
+        justify-content: center;
+    }
+
+    .items-per-page {
+        justify-content: center;
+    }
+}

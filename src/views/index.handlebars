@@ -7,7 +7,36 @@
 
     {{#if isAdmin}}
         <h2 class="catalog-title">Productos del catálogo</h2>
-        <div class="products-list">
+
+        <!-- Controles de paginación para index -->
+        <div class="pagination-controls">
+            <div class="items-per-page">
+                <label for="itemsPerPageIndex">Mostrar:</label>
+                <select id="itemsPerPageIndex">
+                    <option value="5">5 productos</option>
+                    <option value="10" selected>10 productos</option>
+                    <option value="15">15 productos</option>
+                    <option value="20">20 productos</option>
+                </select>
+            </div>
+            <div class="sort-options">
+                <label for="sortByPriceIndex">Ordenar por precio:</label>
+                <select id="sortByPriceIndex">
+                    <option value="">Sin ordenar</option>
+                    <option value="asc">Menor a mayor</option>
+                    <option value="desc" selected>Mayor a menor</option>
+                </select>
+            </div>
+            <div class="pagination-info">
+                <span id="pagination-text-index">Página 1 de 1</span>
+            </div>
+            <div class="pagination-buttons">
+                <button id="prevPageIndex" disabled>Anterior</button>
+                <button id="nextPageIndex" disabled>Siguiente</button>
+            </div>
+        </div>
+
+        <div class="products-list" id="products-container">
             {{#each products}}
                 <div class="product-card">
                     <p class="product-title">{{this.title}}</p>
@@ -21,3 +50,5 @@
         </div>
     {{/if}}
 </div>
+
+<script src="/static/js/index.js"></script>

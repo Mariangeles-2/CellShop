@@ -36,7 +36,7 @@ form {
     max-width: 400px;
 }
 
-input, button {
+input, select, button {
     display: block;
     width: 100%;
     margin-bottom: 14px;
@@ -47,7 +47,7 @@ input, button {
     box-sizing: border-box;
 }
 
-input:focus {
+input:focus, select:focus {
     border-color: #4f8cff;
     outline: none;
 }
@@ -63,4 +63,73 @@ button {
 
 button:hover {
     background: #2563eb;
+}
+
+/* Estilos para controles de paginación */
+.pagination-controls {
+    background: #fff;
+    padding: 16px 18px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.07);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    max-width: 500px;
+}
+
+.items-per-page {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.items-per-page label {
+    font-weight: 600;
+    color: #4a4e69;
+    font-size: 0.95em;
+}
+
+.items-per-page select {
+    width: auto;
+    min-width: 120px;
+    margin-bottom: 0;
+}
+
+.pagination-info {
+    font-weight: 600;
+    color: #4a4e69;
+    font-size: 0.95em;
+}
+
+.pagination-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.pagination-buttons button {
+    width: auto;
+    padding: 8px 16px;
+    margin-bottom: 0;
+    font-size: 0.9em;
+    min-width: 80px;
+}
+
+.pagination-buttons button:disabled {
+    background: #bfc0c0;
+    cursor: not-allowed;
+}
+
+/* Responsive para controles de paginación */
+@media (max-width: 600px) {
+    .pagination-controls {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .pagination-buttons {
+        justify-content: center;
+    }
 }

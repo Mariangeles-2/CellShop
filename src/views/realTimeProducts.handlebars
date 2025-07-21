@@ -1,5 +1,25 @@
 <h1>Productos en tiempo real</h1>
 
+<!-- Controles de paginación -->
+<div class="pagination-controls">
+    <div class="items-per-page">
+        <label for="itemsPerPage">Mostrar:</label>
+        <select id="itemsPerPage">
+            <option value="5">5 productos</option>
+            <option value="10" selected>10 productos</option>
+            <option value="15">15 productos</option>
+            <option value="20">20 productos</option>
+        </select>
+    </div>
+    <div class="pagination-info">
+        <span id="pagination-text">Página 1 de 1</span>
+    </div>
+    <div class="pagination-buttons">
+        <button id="prevPage" disabled>Anterior</button>
+        <button id="nextPage" disabled>Siguiente</button>
+    </div>
+</div>
+
 <!--Lista de productos disponibles-->
 <ul id="product-list">
 </ul>
@@ -9,10 +29,20 @@
 <form id="add-product-form">
     <input name="title" placeholder="Título" required>
     <input name="description" placeholder="Descripción" required>
-    <input name="price" placeholder="Precio" type="number" required>
+    <input name="price" placeholder="Precio" type="number" min="0" step="0.01" required>
     <input name="thumbnail" placeholder="URL Imagen" required>
     <input name="code" placeholder="Código" required>
-    <input name="stock" placeholder="Stock" type="number" required>
+    <input name="stock" placeholder="Stock" type="number" min="0" required>
+
+    <!-- Campo de categoría con select -->
+    <select name="category" required>
+        <option value="">Selecciona una categoría</option>
+        <option value="smartphones">Smartphones</option>
+        <option value="tablets">Tablets</option>
+        <option value="accessories">Accessories</option>
+        <option value="smartwatches">Smartwatches</option>
+    </select>
+
     <button type="submit">Agregar</button>
 </form>
 

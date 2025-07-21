@@ -1,0 +1,74 @@
+{{#if product}}
+    <div class="product-detail-container">
+        <!-- Breadcrumb -->
+        <nav class="breadcrumb">
+            <a href="/products">← Volver al catálogo</a>
+        </nav>
+
+        <div class="product-detail">
+            <!-- Información del producto -->
+            <div class="product-info-detail">
+                <h1 class="product-title-large">{{product.title}}</h1>
+
+                <div class="product-category-badge">
+                    {{#if (eq product.category 'smartphones')}}Smartphones{{/if}}
+                    {{#if (eq product.category 'tablets')}}Tablets{{/if}}
+                    {{#if (eq product.category 'accessories')}}Accesorios{{/if}}
+                    {{#if (eq product.category 'smartwatches')}}Smartwatches{{/if}}
+                </div>
+
+                <div class="product-price-large">${{product.price}}</div>
+
+                <div class="product-description">
+                    <h3>Descripción</h3>
+                    <p>{{product.description}}</p>
+                </div>
+
+                <div class="product-specs">
+                    <div class="spec-item">
+                        <span class="spec-label">Código:</span>
+                        <span class="spec-value">{{product.code}}</span>
+                    </div>
+                    <div class="spec-item">
+                        <span class="spec-label">Stock disponible:</span>
+                        <span class="spec-value {{#if (gt product.stock 0)}}in-stock{{else}}out-stock{{/if}}">
+                        {{product.stock}} unidades
+                    </span>
+                    </div>
+                    {{#if product.createdAt}}
+                        <div class="spec-item">
+                            <span class="spec-label">Fecha de agregado:</span>
+                            <span class="spec-value">{{formatDate product.createdAt}}</span>
+                        </div>
+                    {{/if}}
+                </div>
+
+                <!-- Acciones del producto -->
+                <div class="product-actions-detail">
+                    {{#if (gt product.stock 0)}}
+                        <div class="quantity-selector">
+                            <label for="quantity">Cantidad:</label>
+                            <input type="number" id="quantity" name="quantity" value="1" min="1"
+                                   max="{{product.stock}}">
+                        </div>
+                        <button class="btn-add-cart-large" data-product-id="{{product._id}}">
+                            Agregar al carrito
+                        </button>
+                    {{else}}
+                        <div class="out-of-stock-message">
+                            <span>Producto sin stock</span>
+                        </div>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    </div>
+{{else}}
+    <div class="error-container">
+        <h1>Error</h1>
+        <p>{{error}}</p>
+        <a href="/products" class="btn-back">Volver al catálogo</a>
+    </div>
+{{/if}}
+
+<script src="/static/js/productDetail.js"></script>

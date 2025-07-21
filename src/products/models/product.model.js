@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 // Esquema para los productos con validaciones
 const productSchema = new mongoose.Schema({
@@ -58,12 +58,11 @@ const productSchema = new mongoose.Schema({
 });
 
 // Índices para mejorar performance
-productSchema.index({ code: 1 });
-productSchema.index({ category: 1 });
-productSchema.index({ price: 1 });
+productSchema.index({category: 1});
+productSchema.index({price: 1});
 
 // Convertidor de código a mayúsculas
-productSchema.pre('save', function(next) {
+productSchema.pre('save', function (next) {
     if (this.code) {
         this.code = this.code.toUpperCase();
     }
@@ -71,24 +70,24 @@ productSchema.pre('save', function(next) {
 });
 
 // Formatear el precio
-productSchema.virtual('formattedPrice').get(function() {
+productSchema.virtual('formattedPrice').get(function () {
     return `$${this.price.toLocaleString()}`;
 });
 
 // Verificación de disponibilidad
-productSchema.methods.isAvailable = function() {
+productSchema.methods.isAvailable = function () {
     return this.stock > 0;
 };
 
 // Busqueda por categoría
-productSchema.statics.findByCategory = function(category) {
-    return this.find({ category });
+productSchema.statics.findByCategory = function (category) {
+    return this.find({category});
 };
 
 // Configuración de toJSON
 productSchema.set('toJSON', {
     virtuals: true,
-    transform: function(doc, ret) {
+    transform: function (doc, ret) {
         return ret;
     }
 });

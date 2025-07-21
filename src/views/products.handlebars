@@ -1,0 +1,113 @@
+<h1>Catálogo de Productos</h1>
+
+<!-- Filtros y controles -->
+<div class="filters-container">
+    <form id="filters-form" method="GET" action="/products">
+        <div class="filter-group">
+            <label for="limit">Mostrar:</label>
+            <select name="limit" id="limit">
+                <option value="5" {{#if (eq filters.currentLimit 5)}}selected{{/if}}>5 productos</option>
+                <option value="10" {{#if (eq filters.currentLimit 10)}}selected{{/if}}>10 productos</option>
+                <option value="15" {{#if (eq filters.currentLimit 15)}}selected{{/if}}>15 productos</option>
+                <option value="20" {{#if (eq filters.currentLimit 20)}}selected{{/if}}>20 productos</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="sort">Ordenar por precio:</label>
+            <select name="sort" id="sort">
+                <option value="" {{#unless filters.currentSort}}selected{{/unless}}>Sin ordenar</option>
+                <option value="asc" {{#if (eq filters.currentSort 'asc')}}selected{{/if}}>Menor a mayor</option>
+                <option value="desc" {{#if (eq filters.currentSort 'desc')}}selected{{/if}}>Mayor a menor</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="category">Categoría:</label>
+            <select name="category" id="category">
+                <option value="" {{#unless filters.currentCategory}}selected{{/unless}}>Todas las categorías</option>
+                {{#each filters.categories}}
+                    <option value="{{this}}" {{#if (eq this ../filters.currentCategory)}}selected{{/if}}>
+                        {{#if (eq this 'smartphones')}}Smartphones{{/if}}
+                        {{#if (eq this 'tablets')}}Tablets{{/if}}
+                        {{#if (eq this 'accessories')}}Accesorios{{/if}}
+                        {{#if (eq this 'smartwatches')}}Smartwatches{{/if}}
+                    </option>
+                {{/each}}
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label for="availability">Disponibilidad:</label>
+            <select name="availability" id="availability">
+                <option value="" {{#unless filters.currentAvailability}}selected{{/unless}}>Todos</option>
+                <option value="true" {{#if (eq filters.currentAvailability 'true')}}selected{{/if}}>Disponibles</option>
+                <option value="false" {{#if (eq filters.currentAvailability 'false')}}selected{{/if}}>Sin stock</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <button type="submit">Aplicar filtros</button>
+        </div>
+    </form>
+</div>
+
+<!-- Lista de productos -->
+<div class="products-grid">
+    {{#each products}}
+        <div class="product-card">
+            <div class="product-info">
+                <h3 class="product-title">{{this.title}}</h3>
+                <p class="product-price">${{this.price}}</p>
+                <p class="product-category">{{this.category}}</p>
+                <p class="product-stock">Stock: {{this.stock}}</p>
+
+                <div class="product-actions">
+                    <a href="/products/{{this._id}}" class="btn-view-detail">Ver detalles</a>
+                    {{#if (gt this.stock 0)}}
+                        <button class="btn-add-cart" data-product-id="{{this._id}}">Agregar al carrito</button>
+                    {{else}}
+                        <button class="btn-no-stock" disabled>Sin stock</button>
+                    {{/if}}
+                </div>
+            </div>
+        </div>
+    {{else}}
+        <div class="no-products">
+            <p>No se encontraron productos con los filtros seleccionados.</p>
+        </div>
+    {{/each}}
+</div>
+
+<!-- Paginación -->
+{{#if pagination.totalPages}}
+    <div class="pagination-container">
+        <div class="pagination-info">
+            <span>Página {{pagination.currentPage}} de {{pagination.totalPages}}</span>
+        </div>
+
+        <div class="pagination-buttons">
+            {{#if pagination.hasPrevPage}}
+                <a href="?page={{pagination.prevPage}}&limit={{filters.currentLimit}}&sort={{filters.currentSort}}
+                &category={{filters.currentCategory}}&availability={{filters.currentAvailability}}"
+                class="btn-pagination">Anterior</a>
+            {{else}}
+                <span class="btn-pagination disabled">Anterior</span>
+            {{/if}}
+
+            {{#if pagination.hasNextPage}}
+                <a href="?page={{pagination.nextPage}}&limit={{filters.currentLimit}}&sort={{filters.currentSort}}
+                &category={{filters.currentCategory}}&availability={{filters.currentAvailability}}"
+                class="btn-pagination">Siguiente</a>
+            {{else}}
+                <span class="btn-pagination disabled">Siguiente</span>
+            {{/if}}
+        </div>
+    </div>
+{{/if}}
+
+{{#if error}}
+    <div class="error-message">{{error}}</div>
+{{/if}}
+
+<script src="/static/js/products.js"></script>

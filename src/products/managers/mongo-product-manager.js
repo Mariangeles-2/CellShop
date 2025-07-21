@@ -9,50 +9,77 @@ class MongoProductManager {
                 limit = 10,
                 page = 1,
                 sort,
-                query
+                category,
+                availability
             } = options;
 
-            // Filtros - query representa el tipo de elemento que quiero buscar
+            // Filtros
             const filters = {};
-            
-            // Si hay query, aplicar filtro (en caso de no recibir query, realizar búsqueda general)
-            if (query) {
-                // Aquí puedes definir qué tipo de filtro aplicar basado en el query
-                // Por ejemplo, si query es una categoría
-                filters.category = query;
+
+            // Si hay category, filtrar por categoría específica
+            if (category) {
+                filters.category = category;
             }
 
-            // Ordenamiento solo por precio (asc/desc)
-            let sortOption = {};
+            // Si hay availability, filtrar por disponibilidad
+            if (availability === 'true') {
+                filters.stock = {$gt: 0}; // Productos con stock mayor a 0
+            } else if (availability === 'false') {
+                filters.stock = 0; // Productos sin stock
+            }
+
+            // Ordenar por precio
+            let sortPrice = {};
             if (sort === 'asc') {
-                sortOption.price = 1;
+                sortPrice.price = 1;
             } else if (sort === 'desc') {
-                sortOption.price = -1;
+                sortPrice.price = -1;
             }
 
-            // Consulta con paginación
+            // Consultar con paginación
             const skip = (page - 1) * limit;
             const products = await Product.find(filters)
-                .sort(sortOption)
+                .sort(sortPrice)
                 .limit(limit)
                 .skip(skip)
                 .lean();
 
-            // Contar total de documentos
-            const totalDocs = await Product.countDocuments(filters);
-            const totalPages = Math.ceil(totalDocs / limit);
+            // Contar total de productos buscados
+            const totalProductSearch = await Product.countDocuments(filters);
+            const totalPages = Math.ceil(totalProductSearch / limit);
+
+            // Calcular páginas anterior y siguiente
+            const hasPrevPage = page > 1;
+            const hasNextPage = page < totalPages;
+            const prevPage = hasPrevPage ? page - 1 : null;
+            const nextPage = hasNextPage ? page + 1 : null;
+
+            // Construir links (necesitarás ajustar la URL base según tu configuración)
+            const baseUrl = '/api/products';
+            const buildQueryString = (pageNum) => {
+                const params = new URLSearchParams();
+                if (pageNum) params.append('page', pageNum.toString());
+                if (limit !== 10) params.append('limit', limit.toString());
+                if (sort) params.append('sort', sort);
+                if (category) params.append('category', category);
+                if (availability) params.append('availability', availability);
+                return params.toString() ? `?${params.toString()}` : '';
+            };
+
+            const prevLink = hasPrevPage ? `${baseUrl}${buildQueryString(prevPage)}` : null;
+            const nextLink = hasNextPage ? `${baseUrl}${buildQueryString(nextPage)}` : null;
 
             return {
-                docs: products,
-                totalDocs,
-                limit,
+                status: 'success',
+                payload: products,
                 totalPages,
+                prevPage,
+                nextPage,
                 page,
-                pagingCounter: skip + 1,
-                hasPrevPage: page > 1,
-                hasNextPage: page < totalPages,
-                prevPage: page > 1 ? page - 1 : null,
-                nextPage: page < totalPages ? page + 1 : null
+                hasPrevPage,
+                hasNextPage,
+                prevLink,
+                nextLink
             };
 
         } catch (error) {
@@ -63,92 +90,69 @@ class MongoProductManager {
 
     //Obtener producto por ID
     static async getProductById(id) {
-        try {
-            const product = await Product.findById(id);
-            if (!product) {
-                throw new Error(`Producto con ID ${id} no encontrado`);
-            }
-            return product;
-        } catch (error) {
-            console.error('Error al obtener producto:', error);
-            throw new Error('Error al obtener el producto de la base de datos');
+        const product = await Product.findById(id);
+        if (!product) {
+            const error = new Error(`Producto con ID ${id} no encontrado`);
+            error.code = 'PRODUCT_NOT_FOUND';
+            throw error;
         }
+        return product;
     }
 
     //Agregar nuevo producto
     static async addProduct(productData) {
-        try {
-            // Validación que el código no exista
-            const existingProduct = await Product.findOne({ code: productData.code });
-            if (existingProduct) {
-                throw new Error(`Ya existe un producto con el código ${productData.code}`);
-            }
+        // Verificar código duplicado
+        const existingProduct = await Product.findOne({code: productData.code});
+        if (existingProduct) {
+            const error = new Error(`Ya existe un producto con el código ${productData.code}`);
+            error.code = 'DUPLICATE_CODE';
+            throw error;
+        }
 
+        try {
             const newProduct = new Product(productData);
             await newProduct.save();
             return newProduct;
-
         } catch (error) {
             console.error('Error al agregar producto:', error);
             if (error.name === 'ValidationError') {
                 const messages = Object.values(error.errors).map(err => err.message);
                 throw new Error(`Error de validación: ${messages.join(', ')}`);
             }
-            throw new Error('Error al agregar producto a la base de datos');
+            throw error;
         }
     }
 
-    //Actualizar producto
+    //Modificar producto
     static async updateProduct(id, updates) {
-        try {
-            // Validación que el código no exista
-            if (updates.code) {
-                const existingProduct = await Product.findOne({
-                    code: updates.code,
-                    _id: { $ne: id }
-                });
-                if (existingProduct) {
-                    throw new Error(`Ya existe otro producto con el código ${updates.code}`);
-                }
+
+        const updatedProduct = await Product.findByIdAndUpdate(
+            id,
+            updates,
+            {
+                new: true,
+                runValidators: true
             }
+        );
 
-            const updatedProduct = await Product.findByIdAndUpdate(
-                id,
-                updates,
-                {
-                    new: true,
-                    runValidators: true
-                }
-            );
-
-            if (!updatedProduct) {
-                throw new Error(`Producto con ID ${id} no encontrado`);
-            }
-
-            return updatedProduct;
-
-        } catch (error) {
-            console.error('Error al actualizar producto:', error);
-            if (error.name === 'ValidationError') {
-                const messages = Object.values(error.errors).map(err => err.message);
-                throw new Error(`Error de validación: ${messages.join(', ')}`);
-            }
-            throw new Error('Error al actualizar producto en la base de datos');
+        if (!updatedProduct) {
+            const error = new Error(`Producto con ID ${id} no encontrado`);
+            error.code = 'PRODUCT_NOT_FOUND';
+            throw error;
         }
+
+        return updatedProduct;
     }
 
     //Eliminar producto
     static async deleteProduct(id) {
-        try {
-            const deletedProduct = await Product.findByIdAndDelete(id);
-            if (!deletedProduct) {
-                throw new Error(`Producto con ID ${id} no encontrado`);
-            }
-            return { message: 'Producto eliminado exitosamente', product: deletedProduct };
-        } catch (error) {
-            console.error('Error al eliminar producto:', error);
-            throw new Error('Error al eliminar producto de la base de datos');
+        const deletedProduct = await Product.findByIdAndDelete(id);
+        if (!deletedProduct) {
+            const error = new Error(`Producto con ID ${id} no encontrado`);
+            error.code = 'PRODUCT_NOT_FOUND';
+            throw error;
         }
+        return {message: 'Producto eliminado exitosamente', product: deletedProduct};
     }
 }
 

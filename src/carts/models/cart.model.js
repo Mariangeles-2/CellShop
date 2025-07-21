@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 // Esquema para los productos dentro del carrito
 const cartProductSchema = new mongoose.Schema({
@@ -27,7 +27,7 @@ const cartSchema = new mongoose.Schema({
         type: String,
         default: uuidv4
     },
-    products: [cartProductSchema] 
+    products: [cartProductSchema]
 }, {
     timestamps: true,
     versionKey: false
@@ -45,34 +45,34 @@ const cartSchema = new mongoose.Schema({
   } */
 
 // Método para agregar producto al carrito
-cartSchema.methods.addProduct = function(productId, quantity = 1) {
-    const existingProduct = this.products.find(item => 
+cartSchema.methods.addProduct = function (productId, quantity = 1) {
+    const existingProduct = this.products.find(item =>
         item.product.toString() === productId.toString()
     );
-    
+
     if (existingProduct) {
         existingProduct.quantity += quantity;
     } else {
-        this.products.push({ product: productId, quantity });
+        this.products.push({product: productId, quantity});
     }
-    
+
     return this.save();
 };
 
 // Método para remover producto del carrito
-cartSchema.methods.removeProduct = function(productId) {
-    this.products = this.products.filter(item => 
+cartSchema.methods.removeProduct = function (productId) {
+    this.products = this.products.filter(item =>
         item.product.toString() !== productId.toString()
     );
     return this.save();
 };
 
 // Método para actualizar cantidad de un producto
-cartSchema.methods.updateProductQuantity = function(productId, quantity) {
-    const item = this.products.find(item => 
+cartSchema.methods.updateProductQuantity = function (productId, quantity) {
+    const item = this.products.find(item =>
         item.product.toString() === productId.toString()
     );
-    
+
     if (item) {
         if (quantity <= 0) {
             return this.removeProduct(productId);
@@ -81,25 +81,43 @@ cartSchema.methods.updateProductQuantity = function(productId, quantity) {
             return this.save();
         }
     }
-    
+
     throw new Error('Producto no encontrado en el carrito');
 };
 
 // Método para limpiar el carrito
-cartSchema.methods.clear = function() {
+cartSchema.methods.clear = function () {
     this.products = [];
     return this.save();
 };
 
 // Método virtual para obtener la cantidad total de items
-cartSchema.virtual('totalItems').get(function() {
+cartSchema.virtual('totalItems').get(function () {
     return this.products.reduce((total, item) => total + item.quantity, 0);
+});
+
+// Método virtual para calcular el precio total del carrito
+cartSchema.virtual('totalPrice').get(function () {
+    return this.products.reduce((total, item) => {
+        return total + (item.product.price * item.quantity);
+    }, 0);
+});
+
+// Método virtual para formatear productos con información completa
+cartSchema.virtual('formattedProducts').get(function () {
+    return this.products.map(item => ({
+        title: item.product.title,
+        price: item.product.price,
+        thumbnail: item.product.thumbnail,
+        quantity: item.quantity,
+        subtotal: item.product.price * item.quantity
+    }));
 });
 
 // Configurar toJSON
 cartSchema.set('toJSON', {
     virtuals: true,
-    transform: function(doc, ret) {
+    transform: function (doc, ret) {
         return ret;
     }
 });
