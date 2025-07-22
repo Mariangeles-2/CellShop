@@ -14,7 +14,7 @@ let itemsPerPage = 10;
 let allProducts = [];
 let totalPages = 1;
 
-//Envío del formulario para agregar producto
+// Manejar envío de formulario para agregar producto
 addForm.addEventListener('submit', e => {
     e.preventDefault();
     const data = {
@@ -30,7 +30,7 @@ addForm.addEventListener('submit', e => {
     addForm.reset();
 });
 
-//Envío del formulario para eliminar producto
+// Manejar envío de formulario para eliminar producto
 deleteForm.addEventListener('submit', e => {
     e.preventDefault();
     const id = deleteForm.id.value;
@@ -38,7 +38,7 @@ deleteForm.addEventListener('submit', e => {
     deleteForm.reset();
 });
 
-// Función para calcular paginación
+// Calcular paginación
 function calculatePagination(products) {
     totalPages = Math.ceil(products.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -46,7 +46,7 @@ function calculatePagination(products) {
     return products.slice(startIndex, endIndex);
 }
 
-// Función para actualizar controles de paginación
+// Actualizar controles de paginación
 function updatePaginationControls() {
     paginationText.textContent = `Página ${currentPage} de ${totalPages}`;
 
@@ -54,7 +54,7 @@ function updatePaginationControls() {
     nextButton.disabled = currentPage === totalPages || totalPages === 0;
 }
 
-// Función para renderizar productos
+// Renderizar lista de productos
 function renderProducts(productsToShow) {
     list.innerHTML = '';
     productsToShow.forEach(p => {
@@ -64,7 +64,7 @@ function renderProducts(productsToShow) {
     });
 }
 
-//Actualización de la lista con paginación
+// Escuchar productos desde servidor
 socket.on('products', products => {
     allProducts = products;
 

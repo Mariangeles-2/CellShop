@@ -1,6 +1,6 @@
-// JavaScript para la página de detalle del producto
+// Inicializar página de detalle del producto
 document.addEventListener('DOMContentLoaded', function () {
-    // Funcionalidad del botón agregar al carrito
+    // Configurar botón agregar al carrito
     const addToCartButton = document.querySelector('.btn-add-cart-large');
     const quantityInput = document.getElementById('quantity');
 
@@ -47,7 +47,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Funcionalidad para cambiar imagen principal al hacer clic en thumbnails
+    // Configurar cambio de imágenes
     const thumbnails = document.querySelectorAll('.thumbnail-small');
     const mainImage = document.querySelector('.product-image-large img');
 
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Validación del input de cantidad
+    // Configurar validación de cantidad
     if (quantityInput) {
         quantityInput.addEventListener('change', function () {
             const maxStock = parseInt(this.getAttribute('max'));
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// Función para agregar producto al carrito
+// Agregar producto al carrito
 async function addToCart(productId, quantity = 1) {
     try {
         // Obtener o crear carrito

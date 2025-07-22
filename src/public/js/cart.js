@@ -98,7 +98,7 @@ async function clearCart(cartId) {
     }
 }
 
-// Función para proceder al checkout (placeholder)
+// Proceder al checkout (placeholder)
 function checkout() {
     Swal.fire({
         icon: 'info',
@@ -109,7 +109,7 @@ function checkout() {
     });
 }
 
-// Función para agregar producto al carrito (para usar en productDetail)
+// Agregar producto al carrito (para usar en productDetail)
 async function addToCart(productId, quantity = 1) {
     try {
         // Crear o obtener carrito (usando un ID fijo por simplicidad)
@@ -181,7 +181,7 @@ async function addToCart(productId, quantity = 1) {
     }
 }
 
-// Función para actualizar contador del carrito en el navbar
+// Actualizar contador del carrito en navbar
 async function updateCartCounter() {
     const cartId = localStorage.getItem('cartId');
     if (!cartId) return;
@@ -205,7 +205,7 @@ async function updateCartCounter() {
     }
 }
 
-// Función para cambiar cantidad con botones +/-
+// Cambiar cantidad con botones +/-
 async function changeQuantity(cartId, productId, currentQuantity, change) {
     const newQuantity = currentQuantity + change;
 
@@ -263,7 +263,7 @@ async function changeQuantity(cartId, productId, currentQuantity, change) {
     await updateQuantity(cartId, productId, newQuantity);
 }
 
-// Función para actualizar cantidad de un producto
+// Actualizar cantidad de un producto
 async function updateQuantity(cartId, productId, newQuantity) {
     if (!newQuantity || newQuantity <= 0) {
         Swal.fire({

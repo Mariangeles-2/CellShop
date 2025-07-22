@@ -2,7 +2,7 @@ import Product from "../models/product.model.js";
 
 class MongoProductManager {
 
-    //Obtener todos los productos con paginación y filtros
+    // Obtener productos con paginación y filtros
     static async getProducts(options = {}) {
         try {
             const {
@@ -88,7 +88,7 @@ class MongoProductManager {
         }
     }
 
-    //Obtener producto por ID
+    // Obtener producto por ID
     static async getProductById(id) {
         const product = await Product.findById(id);
         if (!product) {
@@ -99,7 +99,7 @@ class MongoProductManager {
         return product;
     }
 
-    //Agregar nuevo producto
+    // Agregar nuevo producto
     static async addProduct(productData) {
         // Verificar código duplicado
         const existingProduct = await Product.findOne({code: productData.code});
@@ -123,7 +123,7 @@ class MongoProductManager {
         }
     }
 
-    //Modificar producto
+    // Actualizar producto por ID
     static async updateProduct(id, updates) {
 
         const updatedProduct = await Product.findByIdAndUpdate(
@@ -144,7 +144,7 @@ class MongoProductManager {
         return updatedProduct;
     }
 
-    //Eliminar producto
+    // Eliminar producto por ID
     static async deleteProduct(id) {
         const deletedProduct = await Product.findByIdAndDelete(id);
         if (!deletedProduct) {

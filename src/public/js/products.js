@@ -1,6 +1,6 @@
-// JavaScript para la página de productos
+// Inicializar página de productos
 document.addEventListener('DOMContentLoaded', function () {
-    // Auto-submit del formulario cuando cambian los filtros
+    // Configurar auto-submit de filtros
     const filtersForm = document.getElementById('filters-form');
     const selects = filtersForm.querySelectorAll('select');
 
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Funcionalidad de agregar al carrito
+    // Configurar botones de agregar al carrito
     const addToCartButtons = document.querySelectorAll('.btn-add-cart');
 
     addToCartButtons.forEach(button => {
@@ -19,13 +19,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const originalText = this.textContent;
 
             try {
-                // Cambiar estado del botón
                 this.textContent = 'Agregando...';
                 this.disabled = true;
 
-                // Llamada real a la API para agregar al carrito
-                await addToCart(productId, 1); // Cantidad por defecto: 1
-
+                await addToCart(productId, 1);
                 console.log(`Producto ${productId} agregado al carrito`);
 
             } catch (error) {
@@ -38,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     confirmButtonColor: '#dc3545'
                 });
             } finally {
-                // Rehabilitar botón
                 this.disabled = false;
                 this.textContent = originalText;
             }
@@ -46,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Función para agregar producto al carrito (reutilizada desde productDetail.js)
+// Agregar producto al carrito
 async function addToCart(productId, quantity = 1) {
     try {
         // Obtener o crear carrito
@@ -109,7 +105,7 @@ async function addToCart(productId, quantity = 1) {
     }
 }
 
-// Función para actualizar contador del carrito en el navbar
+// Actualizar contador del carrito
 async function updateCartCounter() {
     const cartId = localStorage.getItem('cartId');
     if (!cartId) return;
@@ -131,5 +127,5 @@ async function updateCartCounter() {
     }
 }
 
-// Inicializar contador al cargar la página
+// Inicializar contador al cargar página
 updateCartCounter();

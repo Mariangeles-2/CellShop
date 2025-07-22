@@ -9,27 +9,27 @@ import {__dirname} from "./utils.js";
 import MongoProductManager from "./products/managers/mongo-product-manager.js";
 import DatabaseConnection from "./config/database.js";
 
-// Configuración variables de entorno
+// Configurar variables de entorno
 dotenv.config();
 
-// Express
+// Configurar Express
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Conexión a la DB
+// Conectar a la base de datos
 await DatabaseConnection.connect();
 
-// HTTP desde Express
+// Crear servidor HTTP
 const httpServer = http.createServer(app);
 
-// Servidor de WebSocket
+// Crear servidor WebSocket
 const socketServer = new Server(httpServer);
 
-// Middleware
+// Configurar middleware
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-// Configurar Handlebars con helpers personalizados
+// Configurar Handlebars
 app.engine('handlebars', engine({
     helpers: {
         eq: function (a, b) {
@@ -53,14 +53,14 @@ app.use("/static", express.static(__dirname + "/public"));
 app.use("/api", allRoutes);
 app.use("/", viewsRouter);
 
-// Contenedor del chat
+// Inicializar contenedor de mensajes del chat
 const messages = [];
 
-// Websockets
+// Configurar WebSocket
 socketServer.on("connection", async socket => {
     console.log("🔗 Nuevo cliente conectado:", socket.id);
 
-    //Chat
+    // Manejar chat
     socket.emit("all-msgs", messages);
 
     socket.on("login", (data) => {
@@ -72,7 +72,7 @@ socketServer.on("connection", async socket => {
         socketServer.emit("all-msgs", messages);
     });
 
-    //Productos
+    // Manejar productos en tiempo real
     try {
         const products = await MongoProductManager.getProducts();
         socket.emit("products", products.payload);
@@ -102,5 +102,5 @@ socketServer.on("connection", async socket => {
     });
 });
 
-// Servidor
+// Iniciar servidor
 httpServer.listen(PORT, () => console.log(`✅ Servidor corriendo en puerto ${PORT}`));

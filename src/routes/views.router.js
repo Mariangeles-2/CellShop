@@ -5,7 +5,7 @@ import MongoCartManager from "../carts/managers/mongo-cart-manager.js";
 
 const viewsRouter = Router();
 
-// Renderiza la página principal con usuario
+// Renderizar página principal
 viewsRouter.get("/", async (req, res) => {
     try {
         const user = getRandomUser();
@@ -28,22 +28,22 @@ viewsRouter.get("/", async (req, res) => {
     }
 })
 
-// Renderiza la vista de registro de usuario
+// Renderizar vista de registro
 viewsRouter.get("/register", (req, res) => {
     res.render("register", {pageStyles: "register"});
 })
 
-// Renderiza la vista del chat
+// Renderizar vista de chat
 viewsRouter.get("/chat", (req, res) => {
     res.render("chat", {pageStyles: "chat"});
 });
 
-// Renderiza la vista de productos
+// Renderizar vista de productos en tiempo real
 viewsRouter.get("/realtimeproducts", (req, res) => {
     res.render("realTimeProducts", {pageStyles: "realtimeproducts"});
 })
 
-// Renderiza la vista de productos con paginación y filtros
+// Renderizar vista de productos con paginación
 viewsRouter.get("/products", async (req, res) => {
     try {
         const {limit = 10, page = 1, sort = 'desc', category, availability} = req.query;
@@ -92,7 +92,7 @@ viewsRouter.get("/products", async (req, res) => {
     }
 });
 
-// Renderiza la vista de detalle de un producto individual
+// Renderizar vista de detalle de producto
 viewsRouter.get("/products/:pid", async (req, res) => {
     try {
         const product = await MongoProductManager.getProductById(req.params.pid);
@@ -116,7 +116,7 @@ viewsRouter.get("/products/:pid", async (req, res) => {
     }
 });
 
-// Renderiza la vista del carrito
+// Renderizar vista del carrito
 viewsRouter.get("/cart/:cid", async (req, res) => {
     try {
         const cart = await MongoCartManager.getCartById(req.params.cid);

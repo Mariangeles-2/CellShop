@@ -4,7 +4,7 @@ import {validateProductFull, validateProductPartial} from "../products/utils/pro
 
 const router = express.Router();
 
-// Ruta para obtener todos los productos con paginación y filtros
+// Obtener productos con paginación y filtros
 router.get("/", async (req, res) => {
     try {
         const {limit = 10, page = 1, sort, category, availability} = req.query;
@@ -27,7 +27,7 @@ router.get("/", async (req, res) => {
     }
 });
 
-// Ruta para obtener un producto por ID
+// Obtener producto por ID
 router.get("/:pid", async (req, res) => {
     try {
         const product = await MongoProductManager.getProductById(req.params.pid);
@@ -41,7 +41,7 @@ router.get("/:pid", async (req, res) => {
     }
 });
 
-// Ruta para crear un nuevo producto
+// Crear nuevo producto
 router.post("/", async (req, res) => {
     try {
         const error = validateProductFull(req.body);
@@ -60,7 +60,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-// Ruta para modificar un producto existente
+// Actualizar producto por ID
 router.put("/:pid", async (req, res) => {
     try {
         const error = validateProductPartial(req.body);
@@ -82,7 +82,7 @@ router.put("/:pid", async (req, res) => {
     }
 });
 
-// Ruta para eliminar un producto por ID
+// Eliminar producto por ID
 router.delete("/:pid", async (req, res) => {
     try {
         await MongoProductManager.deleteProduct(req.params.pid);
