@@ -3,7 +3,7 @@ import MongoCartManager from "../carts/managers/mongo-cart-manager.js";
 
 const router = express.Router();
 
-//Ruta para crear carrito nuevo
+// Crear carrito nuevo
 router.post("/", async (req, res) => {
     try {
         const newCart = await MongoCartManager.createCart();
@@ -14,7 +14,7 @@ router.post("/", async (req, res) => {
     }
 });
 
-//Ruta para obtener carrito por ID
+// Obtener carrito por ID
 router.get("/:cid", async (req, res) => {
     try {
         const cart = await MongoCartManager.getCartById(req.params.cid);
@@ -28,7 +28,7 @@ router.get("/:cid", async (req, res) => {
     }
 });
 
-//Ruta para agregar producto a un carrito
+// Agregar producto a carrito
 router.post("/:cid/product/:pid", async (req, res) => {
     try {
         const {quantity = 1} = req.body;
@@ -50,7 +50,7 @@ router.post("/:cid/product/:pid", async (req, res) => {
     }
 });
 
-//Ruta para actualizar cantidad de un producto en el carrito
+// Actualizar cantidad de producto en carrito
 router.put("/:cid/product/:pid", async (req, res) => {
     try {
         const {quantity} = req.body;
@@ -76,7 +76,7 @@ router.put("/:cid/product/:pid", async (req, res) => {
     }
 });
 
-//Ruta para eliminar un producto del carrito
+// Eliminar producto del carrito
 router.delete("/:cid/product/:pid", async (req, res) => {
     try {
         const updatedCart = await MongoCartManager.removeProductFromCart(
@@ -93,7 +93,7 @@ router.delete("/:cid/product/:pid", async (req, res) => {
     }
 });
 
-//Ruta para limpiar carrito
+// Limpiar carrito
 router.delete("/:cid", async (req, res) => {
     try {
         const clearedCart = await MongoCartManager.clearCart(req.params.cid);
@@ -107,7 +107,7 @@ router.delete("/:cid", async (req, res) => {
     }
 });
 
-//Ruta para actualizar todos los productos del carrito con un arreglo de productos
+// Actualizar todos los productos del carrito con un arreglo de productos
 router.put("/:cid", async (req, res) => {
     try {
         const {products} = req.body;

@@ -1,0 +1,77 @@
+{{#if error}}
+    <div class="error-container">
+        <h2>Error</h2>
+        <p>{{error}}</p>
+        <a href="/products" class="btn btn-primary">Volver al catálogo</a>
+    </div>
+{{else}}
+    <div class="cart-container">
+        <nav class="breadcrumb">
+            <a href="/products">← Volver al catálogo</a>
+        </nav>
+
+        <h1>Mi Carrito</h1>
+
+        {{#if cart.products.length}}
+            <div class="cart-items">
+                {{#each cart.products}}
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <h3>{{this.title}}</h3>
+                            {{#if this.category}}
+                                <p class="item-category">{{this.category}}</p>
+                            {{/if}}
+                        </div>
+
+                        <div class="item-quantity">
+                            <label>Cantidad:</label>
+                            <div class="quantity-controls">
+                                <button class="quantity-btn"
+                                        onclick="changeQuantity('{{../cart._id}}', '{{this.productId}}', {{this.quantity}}, -1)">
+                                    -
+                                </button>
+                                <input type="number" class="quantity-input" value="{{this.quantity}}" min="1"
+                                       onchange="updateQuantity('{{../cart._id}}', '{{this.productId}}', this.value)">
+                                <button class="quantity-btn"
+                                        onclick="changeQuantity('{{../cart._id}}', '{{this.productId}}', {{this.quantity}}, 1)">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="item-price">
+                            <span class="unit-price">${{this.price}} c/u</span>
+                            <span class="total-price">${{this.subtotal}}</span>
+                        </div>
+
+                        <div class="item-actions">
+                            <button class="btn btn-danger"
+                                    onclick="removeFromCart('{{../cart._id}}', '{{this.productId}}')">
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                {{/each}}
+            </div>
+
+            <div class="cart-summary">
+                <div class="summary-item">
+                    <strong>Total de productos: {{cart.totalItems}}</strong>
+                </div>
+                <div class="summary-item total">
+                    <strong>Total: ${{cart.totalPrice}}</strong>
+                </div>
+                <div class="cart-actions">
+                    <button class="btn btn-success" onclick="checkout()">Finalizar Compra</button>
+                    <button class="btn btn-secondary" onclick="clearCart('{{cart._id}}')">Vaciar Carrito</button>
+                </div>
+            </div>
+        {{else}}
+            <div class="empty-cart">
+                <h2>Tu carrito está vacío</h2>
+                <p>¡Explora nuestro catálogo y encuentra productos increíbles!</p>
+                <a href="/products" class="btn btn-primary">Ver productos</a>
+            </div>
+        {{/if}}
+    </div>
+{{/if}}

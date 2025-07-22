@@ -7,8 +7,107 @@
     {{#if pageStyles}}
         <link rel="stylesheet" href="/static/css/{{pageStyles}}.css">
     {{/if}}
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .navbar {
+            background: #343a40;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background 0.3s;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .cart-button {
+            position: relative;
+            background: #007bff;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .cart-counter {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
+<nav class="navbar">
+    <a href="/" class="navbar-brand">📱 Cell Shop</a>
+    <div class="navbar-nav">
+        <a href="/" class="nav-link">Inicio</a>
+        <a href="/products" class="nav-link">Productos</a>
+        <a href="/chat" class="nav-link">Chat</a>
+        <button class="cart-button" onclick="goToCart()">
+            🛒 Carrito
+            <span class="cart-counter" style="display: none;">0</span>
+        </button>
+    </div>
+</nav>
 {{{body}}}
+
+<!-- SweetAlert2 JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/static/js/cart.js"></script>
+<script>
+    function goToCart() {
+        const cartId = localStorage.getItem('cartId');
+        if (cartId) {
+            window.location.href = `/cart/${cartId}`;
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: 'Carrito vacío',
+                text: 'No tienes productos en el carrito aún',
+                confirmButtonText: 'Ver productos',
+                confirmButtonColor: '#007bff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/products';
+                }
+            });
+        }
+    }
+</script>
 </body>
 </html>

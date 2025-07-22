@@ -3,7 +3,7 @@ import Product from "../../products/models/product.model.js";
 
 class MongoCartManager {
 
-    // Métodos privados para validaciones y obtención de datos
+    // Obtener y validar producto
     static async #getAndValidateProduct(productId, requiredQuantity = 0) {
         const product = await Product.findById(productId);
         if (!product) {
@@ -21,6 +21,7 @@ class MongoCartManager {
         return product;
     }
 
+    // Obtener y validar carrito
     static async #getAndValidateCart(cartId) {
         const cart = await Cart.findById(cartId);
         if (!cart) {
@@ -31,6 +32,7 @@ class MongoCartManager {
         return cart;
     }
 
+    // Buscar y validar producto en carrito
     static #findAndValidateProductInCart(cart, productId) {
         const productIndex = cart.products.findIndex(item =>
             item.product.toString() === productId.toString()
@@ -45,7 +47,7 @@ class MongoCartManager {
         return {productIndex, product: cart.products[productIndex]};
     }
 
-    //Crear un nuevo carrito
+    // Crear nuevo carrito
     static async createCart() {
         try {
             const newCart = new Cart();
@@ -56,7 +58,7 @@ class MongoCartManager {
         }
     }
 
-    //Obtener carrito por ID con productos
+    // Obtener carrito por ID con productos populados
     static async getCartById(id) {
         const cart = await Cart.findById(id)
             .populate('products.product');
@@ -67,14 +69,16 @@ class MongoCartManager {
             throw error;
         }
 
+        // Usar el método virtual formattedProducts después del populate
         return {
-            products: cart.formattedProducts,
+            _id: cart._id,
+            products: cart.formattedProducts, // Usar el método virtual que ya formatea los datos
             totalPrice: cart.totalPrice,
             totalItems: cart.totalItems
         };
     }
 
-    //Agregar producto al carrito
+    // Agregar producto al carrito
     static async addProductToCart(cartId, productId, quantity = 1) {
         // Validar producto, stock y carrito
         const product = await MongoCartManager.#getAndValidateProduct(productId, quantity);
@@ -108,7 +112,7 @@ class MongoCartManager {
         }
     }
 
-    //Eliminar producto del carrito
+    // Eliminar producto del carrito
     static async removeProductFromCart(cartId, productId) {
         // Usar método privado para obtener y validar carrito
         const cart = await MongoCartManager.#getAndValidateCart(cartId);
@@ -126,7 +130,7 @@ class MongoCartManager {
         }
     }
 
-    //Actualizar cantidad de un producto en el carrito
+    // Actualizar cantidad de producto en carrito
     static async updateProductQuantity(cartId, productId, quantity) {
         if (quantity <= 0) {
             return await MongoCartManager.removeProductFromCart(cartId, productId);
@@ -149,7 +153,7 @@ class MongoCartManager {
         }
     }
 
-    //Limpiar carrito
+    // Limpiar carrito
     static async clearCart(cartId) {
         // Usar método privado para obtener y validar carrito
         const cart = await MongoCartManager.#getAndValidateCart(cartId);
@@ -163,7 +167,7 @@ class MongoCartManager {
         }
     }
 
-    //Eliminar carrito
+    // Eliminar carrito
     static async deleteCart(cartId) {
         const deletedCart = await Cart.findByIdAndDelete(cartId);
         if (!deletedCart) {

@@ -1,6 +1,7 @@
 import {Router} from "express";
 import {getRandomUser} from "../users/utils.js";
 import MongoProductManager from "../products/managers/mongo-product-manager.js";
+import MongoCartManager from "../carts/managers/mongo-cart-manager.js";
 
 const viewsRouter = Router();
 
@@ -111,6 +112,27 @@ viewsRouter.get("/products/:pid", async (req, res) => {
         res.status(500).render("productDetail", {
             error: 'Error al cargar el producto',
             pageStyles: "productDetail"
+        });
+    }
+});
+
+// Renderiza la vista del carrito
+viewsRouter.get("/cart/:cid", async (req, res) => {
+    try {
+        const cart = await MongoCartManager.getCartById(req.params.cid);
+        const user = getRandomUser();
+
+        res.render("cart", {
+            cart: cart,
+            user: user,
+            pageStyles: "cart"
+        });
+    } catch (error) {
+        console.error('Error al obtener carrito:', error);
+        res.render("cart", {
+            cart: null,
+            error: 'Error al cargar el carrito',
+            pageStyles: "cart"
         });
     }
 });

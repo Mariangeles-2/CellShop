@@ -7,13 +7,18 @@ document.addEventListener('DOMContentLoaded', function () {
     if (addToCartButton) {
         addToCartButton.addEventListener('click', async function () {
             const productId = this.getAttribute('data-product-id');
-            const quantity = quantityInput ? parseInt(quantityInput.value) : 1;
+            const quantity = quantityInput ? quantityInput.value : 1;
             const originalText = this.textContent;
 
             try {
                 // Validar cantidad
                 if (!quantity || quantity <= 0) {
-                    alert('Por favor, selecciona una cantidad válida');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Cantidad inválida',
+                        text: 'Por favor, selecciona una cantidad válida',
+                        confirmButtonColor: '#007bff'
+                    });
                     return;
                 }
 
@@ -21,40 +26,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.textContent = 'Agregando...';
                 this.disabled = true;
 
-                // Aquí podrías hacer la llamada real a la API para agregar al carrito
-                // Por ejemplo: POST /api/carts/:cartId/product/:productId
-                // Por ahora simulamos la funcionalidad
-                await new Promise(resolve => setTimeout(resolve, 1000));
-
-                // Mostrar mensaje de éxito
-                this.textContent = '¡Agregado al carrito!';
-                this.style.background = '#28a745';
-
-                // Mostrar notificación
-                showNotification(`${quantity} producto(s) agregado(s) al carrito`, 'success');
-
-                // Restaurar botón después de 3 segundos
-                setTimeout(() => {
-                    this.textContent = originalText;
-                    this.style.background = '';
-                    this.disabled = false;
-                }, 3000);
+                await addToCart(productId, quantity);
 
                 console.log(`Producto ${productId} agregado al carrito con cantidad: ${quantity}`);
 
             } catch (error) {
                 console.error('Error al agregar al carrito:', error);
 
-                this.textContent = 'Error al agregar';
-                this.style.background = '#dc3545';
-
-                showNotification('Error al agregar al carrito', 'error');
-
-                setTimeout(() => {
-                    this.textContent = originalText;
-                    this.style.background = '';
-                    this.disabled = false;
-                }, 3000);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al agregar el producto al carrito',
+                    confirmButtonColor: '#dc3545'
+                });
+            } finally {
+                // Rehabilitar botón
+                this.disabled = false;
+                this.textContent = originalText;
             }
         });
     }
@@ -82,63 +70,83 @@ document.addEventListener('DOMContentLoaded', function () {
                 this.value = minValue;
             } else if (value > maxStock) {
                 this.value = maxStock;
-                showNotification(`Cantidad máxima disponible: ${maxStock}`, 'warning');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Cantidad ajustada',
+                    text: `Cantidad máxima disponible: ${maxStock}`,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }
         });
     }
 });
 
-// Función auxiliar para mostrar notificaciones
-function showNotification(message, type = 'info') {
-    // Crear elemento de notificación
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.textContent = message;
+// Función para agregar producto al carrito
+async function addToCart(productId, quantity = 1) {
+    try {
+        // Obtener o crear carrito
+        let cartId = localStorage.getItem('cartId');
 
-    // Estilos inline para la notificación
-    notification.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 15px 20px;
-        border-radius: 6px;
-        color: white;
-        font-weight: 600;
-        z-index: 1000;
-        opacity: 0;
-        transform: translateX(100%);
-        transition: all 0.3s ease;
-    `;
+        if (!cartId) {
+            const createResponse = await fetch('/api/carts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-    // Colores según el tipo
-    const colors = {
-        success: '#28a745',
-        error: '#dc3545',
-        warning: '#ffc107',
-        info: '#17a2b8'
-    };
-
-    notification.style.backgroundColor = colors[type] || colors.info;
-
-    // Agregar al DOM
-    document.body.appendChild(notification);
-
-    // Animar entrada
-    setTimeout(() => {
-        notification.style.opacity = '1';
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-
-    // Remover después de 4 segundos
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        notification.style.transform = 'translateX(100%)';
-
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
+            if (createResponse.ok) {
+                const newCart = await createResponse.json();
+                // La respuesta es directamente el carrito, no tiene .payload
+                cartId = newCart._id;
+                localStorage.setItem('cartId', cartId);
+            } else {
+                throw new Error('No se pudo crear el carrito');
             }
-        }, 300);
-    }, 4000);
-}
+        }
 
+        // Agregar producto al carrito
+        const response = await fetch(`/api/carts/${cartId}/product/${productId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({quantity: parseInt(quantity)})
+        });
+
+        if (response.ok) {
+            const result = await Swal.fire({
+                icon: 'success',
+                title: '¡Producto agregado!',
+                text: `${quantity} producto(s) agregado(s) al carrito exitosamente`,
+                showCancelButton: true,
+                confirmButtonText: '🛒 Ver carrito',
+                cancelButtonText: '🛍️ Seguir comprando',
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#007bff',
+                reverseButtons: true
+            });
+
+            if (result.isConfirmed) {
+                window.location.href = `/cart/${cartId}`;
+            }
+        } else {
+            const errorData = await response.json();
+            Swal.fire({
+                icon: 'error',
+                title: 'Error al agregar',
+                text: errorData.error || 'No se pudo agregar el producto al carrito',
+                confirmButtonColor: '#dc3545'
+            });
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'Error al conectar con el servidor. Inténtalo de nuevo.',
+            confirmButtonColor: '#dc3545'
+        });
+    }
+}

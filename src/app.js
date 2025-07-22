@@ -37,7 +37,14 @@ app.engine('handlebars', engine({
         },
         gt: function (a, b) {
             return a > b;
+        },
+        multiply: function (a, b) {
+            return (a * b).toFixed(2);
         }
+    },
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true
     }
 }));
 app.set('view engine', 'handlebars');

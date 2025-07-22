@@ -98,19 +98,20 @@ cartSchema.virtual('totalItems').get(function () {
 
 // Método virtual para calcular el precio total del carrito
 cartSchema.virtual('totalPrice').get(function () {
-    return this.products.reduce((total, item) => {
+    const total = this.products.reduce((total, item) => {
         return total + (item.product.price * item.quantity);
     }, 0);
+    return parseFloat(total.toFixed(2)); // Formatear a 2 decimales y convertir a número
 });
 
 // Método virtual para formatear productos con información completa
 cartSchema.virtual('formattedProducts').get(function () {
     return this.products.map(item => ({
+        productId: item.product._id,
         title: item.product.title,
-        price: item.product.price,
-        thumbnail: item.product.thumbnail,
+        price: parseFloat(item.product.price.toFixed(2)), // Formatear precio unitario
         quantity: item.quantity,
-        subtotal: item.product.price * item.quantity
+        subtotal: parseFloat((item.product.price * item.quantity).toFixed(2)) // Formatear subtotal
     }));
 });
 
